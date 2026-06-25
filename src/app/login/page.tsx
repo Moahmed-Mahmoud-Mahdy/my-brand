@@ -3,7 +3,7 @@
 import { useState, type FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Lock, Mail, ArrowRight, ArrowLeft, Shield } from "lucide-react";
+import { Lock, Mail, ArrowRight, ArrowLeft, Shield, Loader2 } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { useCursor } from "@/components/cursor/cursor-provider";
 import { toast } from "sonner";
@@ -147,11 +147,20 @@ export default function LoginPage() {
             >
               <span className="absolute inset-0 bg-gold-gradient transition-transform duration-500 group-hover:scale-105" />
               <span className="relative z-10 flex items-center gap-2 font-cairo text-sm font-bold tracking-cinematic text-bg-primary">
-                {t.admin.login.submit}
-                {isAr ? (
-                  <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t.admin.login.submitting}
+                  </>
                 ) : (
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  <>
+                    {t.admin.login.submit}
+                    {isAr ? (
+                      <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                    ) : (
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                    )}
+                  </>
                 )}
               </span>
             </button>

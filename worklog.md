@@ -121,3 +121,18 @@ Stage Summary:
 - Dashboard now opens reliably in the preview iframe (localStorage token auth fallback)
 - Name uses IBM Plex Sans Arabic Bold/SemiBold as requested
 - Lint clean, all flows verified via agent-browser
+
+---
+Task ID: 18
+Agent: Main (Z.ai Code)
+Task: Change login button loading text to "جارٍ تجربة الدخول"
+
+Work Log:
+- Added `submitting` translation key: AR="جارٍ تجربة الدخول", EN="Signing in..."
+- Updated login submit button: when `loading` is true, shows Loader2 spinner + submitting text (replaces static "دخول" + arrow)
+- Button is disabled during submission (already had disabled:opacity-70)
+- Verified via agent-browser with delayed fetch: button text = "جارٍ تجربة الدخول", disabled=true, spinner visible
+- Lint clean
+
+Stage Summary:
+- Login button now shows "جارٍ تجربة الدخول" with a spinning loader while authenticating
