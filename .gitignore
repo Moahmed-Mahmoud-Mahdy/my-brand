@@ -50,5 +50,13 @@ test
 prompt
 
 server.log
-# Skills directory
 /skills/
+
+# Workspace backups and states
+workspace-*
+*.tar
+*.zip
+*.gz
+*.tgz
+ضغط/
+workspaces/
