@@ -35,7 +35,7 @@ export default function Home() {
       {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
 
       <div
-        className={`relative z-10 flex min-h-screen flex-col transition-opacity duration-700 ${
+        className={`relative z-10 flex min-h-screen flex-col overflow-x-hidden transition-opacity duration-700 ${
           loading ? "opacity-0" : "opacity-100"
         }`}
       >

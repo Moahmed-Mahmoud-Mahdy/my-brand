@@ -31,7 +31,7 @@ export function Footer() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-primary/40 to-transparent" />
 
       <div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between">
+        <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between md:gap-4">
           {/* Brand */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

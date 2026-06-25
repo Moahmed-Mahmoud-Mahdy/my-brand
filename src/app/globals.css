@@ -149,11 +149,16 @@
   }
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
   body {
     @apply bg-background text-foreground;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+    overflow-x: hidden;
+  }
+  img {
+    max-width: 100%;
   }
 
   /* Custom scrollbar — Eclipse styled */

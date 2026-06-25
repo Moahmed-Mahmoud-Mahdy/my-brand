@@ -121,21 +121,21 @@ function FragmentsConstellation({
   const isAr = lang === "ar";
 
   return (
-    <div className="flex flex-wrap items-start justify-center gap-x-6 gap-y-16 sm:gap-x-10 lg:gap-x-14">
+    <div className="grid grid-cols-1 place-items-center gap-x-6 gap-y-12 sm:grid-cols-2 lg:gap-x-10 xl:grid-cols-3">
       {projects.map((project, idx) => {
-        // Asymmetric sizing pattern — varies by index for constellation feel
+        // Asymmetric sizing pattern — varies by index for constellation feel (desktop only)
         const sizePattern = idx % 5;
         const sizeClass =
           sizePattern === 0
-            ? "w-[260px] sm:w-[300px] lg:w-[340px]"
+            ? "w-[220px] sm:w-[240px] lg:w-[300px] xl:w-[340px]"
             : sizePattern === 1
-            ? "w-[220px] sm:w-[260px] lg:w-[290px]"
+            ? "w-[200px] sm:w-[220px] lg:w-[260px] xl:w-[290px]"
             : sizePattern === 2
-            ? "w-[280px] sm:w-[320px] lg:w-[360px]"
+            ? "w-[230px] sm:w-[250px] lg:w-[280px] xl:w-[360px]"
             : sizePattern === 3
-            ? "w-[210px] sm:w-[250px] lg:w-[280px]"
-            : "w-[240px] sm:w-[280px] lg:w-[320px]";
-        // Alternating vertical offset
+            ? "w-[200px] sm:w-[220px] lg:w-[240px] xl:w-[280px]"
+            : "w-[215px] sm:w-[235px] lg:w-[260px] xl:w-[320px]";
+        // Alternating vertical offset (desktop only)
         const offsetClass =
           sizePattern === 1
             ? "lg:mt-20"

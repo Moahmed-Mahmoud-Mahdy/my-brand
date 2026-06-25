@@ -88,7 +88,7 @@ export function ServicesSection() {
         </div>
 
         {/* Services grid — circular cards */}
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {services.map((service, idx) => {
             const Icon = service.icon;
             const data = t.services.list[service.key];
@@ -108,7 +108,7 @@ export function ServicesSection() {
                 className="group relative flex flex-col items-center"
               >
                 {/* Circular card */}
-                <div className="relative flex aspect-square w-full max-w-[260px] items-center justify-center">
+                <div className="relative flex aspect-square w-full max-w-[200px] items-center justify-center sm:max-w-[240px] lg:max-w-[260px]">
                   {/* Outer ring */}
                   <div className="absolute inset-0 rounded-full border border-eclipse-border transition-all duration-700 group-hover:border-gold-primary/40" />
 

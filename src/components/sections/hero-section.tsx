@@ -18,9 +18,9 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center overflow-hidden px-4 pt-28 pb-16 sm:px-6 lg:px-8"
+      className="relative flex min-h-screen items-center overflow-hidden px-4 pt-24 pb-16 sm:px-6 sm:pt-28 lg:px-8"
     >
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-8">
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-8">
         {/* LEFT — Text */}
         <motion.div
           initial="hidden"
@@ -29,14 +29,14 @@ export function HeroSection() {
             hidden: {},
             visible: { transition: { staggerChildren: 0.12 } },
           }}
-          className={`order-2 flex flex-col gap-6 lg:order-1 ${
-            isAr ? "lg:items-start text-right" : "lg:items-start text-left"
+          className={`order-2 flex flex-col gap-4 sm:gap-6 lg:order-1 ${
+            isAr ? "items-center text-center lg:items-start lg:text-right" : "items-center text-left lg:items-start"
           }`}
         >
           {/* Available badge */}
           <motion.div
             variants={fadeUp}
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-gold-primary/25 bg-surface/40 px-4 py-1.5 backdrop-blur-sm"
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-gold-primary/25 bg-surface/40 px-4 py-1.5 backdrop-blur-sm self-center lg:self-auto"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
@@ -58,13 +58,13 @@ export function HeroSection() {
           {/* Name */}
           <motion.h1
             variants={fadeUp}
-            className="font-name text-5xl leading-[1.05] tracking-cinematic text-text-primary sm:text-6xl lg:text-7xl"
+            className="font-name text-4xl leading-[1.05] tracking-cinematic text-text-primary sm:text-5xl md:text-6xl lg:text-7xl"
           >
             {t.hero.name}
           </motion.h1>
 
           {/* Role */}
-          <motion.div variants={fadeUp} className="flex items-center gap-3">
+          <motion.div variants={fadeUp} className="flex items-center justify-center gap-3 lg:justify-start">
             <span className="h-px w-10 bg-gold-gradient" />
             <span className="font-mono text-lg font-medium tracking-wide text-gold-primary glow-text-soft sm:text-xl">
               {t.hero.role}
@@ -74,7 +74,7 @@ export function HeroSection() {
           {/* Description */}
           <motion.p
             variants={fadeUp}
-            className="max-w-md font-cairo text-base leading-relaxed text-text-secondary sm:text-lg"
+            className="max-w-md text-center font-cairo text-base leading-relaxed text-text-secondary sm:text-lg lg:text-left"
           >
             {t.hero.description}
           </motion.p>
@@ -82,7 +82,7 @@ export function HeroSection() {
           {/* CTAs */}
           <motion.div
             variants={fadeUp}
-            className="flex flex-wrap items-center gap-4 pt-2"
+            className="flex flex-wrap items-center justify-center gap-4 pt-2 lg:justify-start"
           >
             <button
               onClick={() => scrollTo("projects")}
@@ -111,7 +111,7 @@ export function HeroSection() {
           {/* Stats */}
           <motion.div
             variants={fadeUp}
-            className="mt-6 flex items-center gap-8 pt-6"
+            className="mt-2 flex items-center justify-center gap-8 pt-4 sm:mt-4 lg:justify-start"
           >
             {[
               { num: "+30", label: t.hero.stat1 },
@@ -170,7 +170,7 @@ function EclipsePhoto() {
   const { setVariant } = useCursor();
   return (
     <div
-      className="relative aspect-square w-[280px] sm:w-[380px] lg:w-[460px]"
+      className="relative aspect-square w-[220px] sm:w-[320px] lg:w-[460px]"
       onMouseEnter={() => setVariant("hover")}
       onMouseLeave={() => setVariant("default")}
     >
