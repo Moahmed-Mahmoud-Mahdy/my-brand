@@ -79,3 +79,19 @@ Stage Summary:
 - Custom cursor now renders reliably in the preview panel and follows the mouse
 - Bigger, brighter, more visible gold ring + dot with cinematic glow
 - Lint clean, no errors
+
+---
+Task ID: 16
+Agent: Main (Z.ai Code)
+Task: Make loading screen auto-advance to homepage (no Enter button)
+
+Work Log:
+- Removed the manual "Enter" button and the showEnter state from LoadingScreen
+- After progress reaches 100%, brief 500ms hold then auto-trigger exit animation (blur+scale+fade, 950ms) then onComplete()
+- Total loading sequence: ~300ms delay + 1400ms (step 1) + 1600ms (step 2) + 500ms hold + 950ms exit ≈ 4.75s
+- Verified via agent-browser: at T=0 loading shows "جارٍ تهيئة الهوية..." with NO Enter button; at T≈5s homepage hero ("محمد مهدي") is visible
+- VLM confirmed hero section renders after auto-advance
+
+Stage Summary:
+- Loading screen now transitions to homepage automatically — no user interaction required
+- Lint clean

@@ -8,7 +8,6 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const { t } = useLanguage();
   const [step, setStep] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [showEnter, setShowEnter] = useState(false);
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
@@ -35,7 +34,12 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
               next();
             } else {
               setProgress(100);
-              setTimeout(() => setShowEnter(true), 300);
+              // Brief hold at 100% then auto-reveal the homepage.
+              // No manual "Enter" press required.
+              setTimeout(() => {
+                setExiting(true);
+                setTimeout(onComplete, 950);
+              }, 500);
             }
           }
         };
@@ -45,12 +49,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
 
     const timer = setTimeout(next, 300);
     return () => clearTimeout(timer);
-  }, []);
-
-  const handleEnter = () => {
-    setExiting(true);
-    setTimeout(onComplete, 900);
-  };
+  }, [onComplete]);
 
   const labels = [t.loading.step1, t.loading.step2];
   const statusLabels = [
@@ -149,58 +148,36 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
                   {statusLabels[Math.min(step, statusLabels.length - 1)]}
                 </div>
                 <h1 className="font-cairo text-xl font-medium text-text-primary sm:text-2xl">
-                  {showEnter ? t.loading.step2 : labels[step] ?? t.loading.step2}
+                  {labels[step] ?? t.loading.step2}
                 </h1>
               </motion.div>
             </AnimatePresence>
 
             {/* Progress bar */}
-            {!showEnter && (
-              <div className="relative h-px w-56 overflow-hidden bg-eclipse-border sm:w-72">
-                <motion.div
-                  className="absolute inset-y-0 left-0 bg-gold-gradient"
-                  style={{ width: `${progress}%` }}
-                />
-                <div
-                  className="absolute inset-y-0 w-12 -translate-x-12"
-                  style={{
-                    left: `${progress}%`,
-                    background:
-                      "linear-gradient(90deg, transparent, rgba(214,178,94,0.8), transparent)",
-                  }}
-                />
-              </div>
-            )}
+            <div className="relative h-px w-56 overflow-hidden bg-eclipse-border sm:w-72">
+              <motion.div
+                className="absolute inset-y-0 left-0 bg-gold-gradient"
+                style={{ width: `${progress}%` }}
+              />
+              <div
+                className="absolute inset-y-0 w-12 -translate-x-12"
+                style={{
+                  left: `${progress}%`,
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(214,178,94,0.8), transparent)",
+                }}
+              />
+            </div>
 
             {/* Percentage */}
-            {!showEnter && (
-              <motion.div
-                className="mt-4 font-mono text-[11px] tracking-wider-cinema text-text-secondary"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                {Math.round(progress).toString().padStart(2, "0")}%
-              </motion.div>
-            )}
-
-            {/* Enter button */}
-            <AnimatePresence>
-              {showEnter && (
-                <motion.button
-                  initial={{ opacity: 0, y: 16, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  onClick={handleEnter}
-                  className="group relative mt-4 overflow-hidden rounded-full border border-gold-primary/40 px-10 py-3"
-                >
-                  <span className="absolute inset-0 bg-gold-gradient opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <span className="relative z-10 font-cairo text-sm font-medium tracking-cinematic text-gold-primary transition-colors duration-500 group-hover:text-bg-primary">
-                    {t.loading.enter}
-                  </span>
-                </motion.button>
-              )}
-            </AnimatePresence>
+            <motion.div
+              className="mt-4 font-mono text-[11px] tracking-wider-cinema text-text-secondary"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              {Math.round(progress).toString().padStart(2, "0")}%
+            </motion.div>
           </div>
 
           {/* Corner brackets — cinematic frame */}
