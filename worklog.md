@@ -61,3 +61,21 @@ Stage Summary:
 - Admin dashboard fully operational (CRUD projects, manage messages)
 - Site verified end-to-end via agent-browser (desktop + mobile)
 - Artifacts: screenshots in /home/z/my-project/screenshots/
+
+---
+Task ID: 15
+Agent: Main (Z.ai Code)
+Task: Fix custom cursor not visible
+
+Work Log:
+- Root cause: cursor was gated behind `window.matchMedia("(pointer: fine)")` which returns false in preview iframes and headless browsers, so the CustomCursor component never rendered
+- Rewrote detection: always render CustomCursor; reveal on first real mousemove (touch devices never fire mousemove so cursor stays hidden there)
+- Hide native cursor via `.cursor-active` body class on non-touch-primary devices (uses navigator.maxTouchPoints)
+- Made cursor more prominent: ring 38px (was 32) with border-2 + stronger glow, dot 8px (was 6) with triple-layer gold shadow, ring opacity 0.85 (was 0.6)
+- Added visibleRef to track visibility without stale-state re-renders
+- Verified via agent-browser: body.cursor-active=true, wrapper opacity=1 after mousemove, VLM confirms "gold glowing dot visible"
+
+Stage Summary:
+- Custom cursor now renders reliably in the preview panel and follows the mouse
+- Bigger, brighter, more visible gold ring + dot with cinematic glow
+- Lint clean, no errors

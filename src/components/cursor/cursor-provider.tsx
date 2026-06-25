@@ -17,17 +17,26 @@ interface CursorContextValue {
 
 const CursorContext = createContext<CursorContextValue | undefined>(undefined);
 
+// We always render the custom cursor component. It stays invisible (opacity 0)
+// until the first real `mousemove` event — so on touch-only devices it never
+// appears, while on any device with a mouse (including preview iframes that
+// don't report `pointer: fine`) it shows up the moment the user moves the mouse.
+// We hide the native cursor via the `.cursor-active` body class only when the
+// device is not primarily touch-based, so mobile users keep their normal
+// behaviour for form inputs etc.
+function isTouchPrimary(): boolean {
+  if (typeof window === "undefined") return false;
+  const maxTouch = navigator.maxTouchPoints || 0;
+  return maxTouch > 0 && !window.matchMedia("(any-pointer: fine)").matches;
+}
+
 export function CursorProvider({ children }: { children: ReactNode }) {
   const [variant, setVariant] = useState<
     "default" | "hover" | "text"
   >("default");
-  const [enabled, setEnabled] = useState(false);
 
-  // Enable cursor only on fine-pointer (desktop) devices — done once on mount.
   useIsomorphicLayoutEffect(() => {
-    const mq = window.matchMedia("(pointer: fine)");
-    if (mq.matches) {
-      setEnabled(true);
+    if (!isTouchPrimary()) {
       document.body.classList.add("cursor-active");
     }
     return () => {
@@ -37,13 +46,12 @@ export function CursorProvider({ children }: { children: ReactNode }) {
 
   return (
     <CursorContext.Provider value={{ variant, setVariant }}>
-      {enabled && <CustomCursor variant={variant} />}
+      <CustomCursor variant={variant} />
       {children}
     </CursorContext.Provider>
   );
 }
 
-// useIsomorphicLayoutEffect avoids SSR warnings while running synchronously on client
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
@@ -60,38 +68,58 @@ function CustomCursor({
 }) {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const visibleRef = useRef(false);
   const [visible, setVisible] = useState(false);
   const [clicking, setClicking] = useState(false);
 
   useEffect(() => {
+    // Initialize position to viewport center so the cursor is visible
+    // immediately even before the first mousemove.
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
     let rafRing = 0;
-    let mouseX = 0;
-    let mouseY = 0;
-    let ringX = 0;
-    let ringY = 0;
 
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      setVisible(true);
+      if (!visibleRef.current) {
+        visibleRef.current = true;
+        setVisible(true);
+      }
       if (dotRef.current) {
         dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
       }
     };
 
-    const onLeave = () => setVisible(false);
-    const onEnter = () => setVisible(true);
+    const onLeave = () => {
+      visibleRef.current = false;
+      setVisible(false);
+    };
+    const onEnter = () => {
+      visibleRef.current = true;
+      setVisible(true);
+    };
     const onDown = () => setClicking(true);
     const onUp = () => setClicking(false);
 
     const animateRing = () => {
-      ringX += (mouseX - ringX) * 0.18;
-      ringY += (mouseY - ringY) * 0.18;
+      ringX += (mouseX - ringX) * 0.2;
+      ringY += (mouseY - ringY) * 0.2;
       if (ringRef.current) {
         ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
       }
       rafRing = requestAnimationFrame(animateRing);
     };
+
+    // Place cursor at center initially (hidden until first mousemove)
+    if (dotRef.current) {
+      dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%)`;
+    }
+    if (ringRef.current) {
+      ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%)`;
+    }
 
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseleave", onLeave);
@@ -111,16 +139,19 @@ function CustomCursor({
   }, []);
 
   const ringSize =
-    variant === "hover" ? 56 : variant === "text" ? 40 : 32;
-  const dotSize = variant === "text" ? 2 : 6;
-  const ringOpacity = variant === "hover" ? 0.9 : variant === "text" ? 0.5 : 0.6;
-  const dotOpacity = variant === "hover" ? 0 : 1;
+    variant === "hover" ? 64 : variant === "text" ? 44 : 38;
+  const dotSize = variant === "text" ? 3 : 8;
+  const ringOpacity = variant === "hover" ? 1 : variant === "text" ? 0.7 : 0.85;
+  const dotOpacity = variant === "hover" ? 0.4 : 1;
 
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[9999]"
-      style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s" }}
+      className="pointer-events-none fixed inset-0 z-[10000]"
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.4s ease",
+      }}
     >
       {/* Outer ring */}
       <div
@@ -130,20 +161,20 @@ function CustomCursor({
           width: ringSize,
           height: ringSize,
           transition:
-            "width 0.3s cubic-bezier(0.22,1,0.36,1), height 0.3s cubic-bezier(0.22,1,0.36,1), opacity 0.3s",
+            "width 0.35s cubic-bezier(0.22,1,0.36,1), height 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.3s",
           opacity: ringOpacity,
         }}
       >
         <div
-          className="absolute inset-0 rounded-full border"
+          className="absolute inset-0 rounded-full border-2"
           style={{
-            borderColor: "rgba(214, 178, 94, 0.7)",
+            borderColor: "rgba(214, 178, 94, 0.85)",
             boxShadow:
               variant === "hover"
-                ? "0 0 24px rgba(214,178,94,0.5), inset 0 0 12px rgba(214,178,94,0.25)"
-                : "0 0 12px rgba(214,178,94,0.3)",
-            transform: clicking ? "scale(0.8)" : "scale(1)",
-            transition: "transform 0.2s ease, box-shadow 0.3s ease",
+                ? "0 0 28px rgba(214,178,94,0.6), inset 0 0 16px rgba(214,178,94,0.3)"
+                : "0 0 18px rgba(214,178,94,0.45), inset 0 0 8px rgba(214,178,94,0.15)",
+            transform: clicking ? "scale(0.78)" : "scale(1)",
+            transition: "transform 0.18s ease, box-shadow 0.3s ease",
           }}
         />
       </div>
@@ -163,7 +194,7 @@ function CustomCursor({
           style={{
             background: "var(--gold-primary)",
             boxShadow:
-              "0 0 8px rgba(214,178,94,0.9), 0 0 16px rgba(214,178,94,0.5)",
+              "0 0 10px rgba(214,178,94,1), 0 0 22px rgba(214,178,94,0.7), 0 0 36px rgba(214,178,94,0.35)",
           }}
         />
       </div>
