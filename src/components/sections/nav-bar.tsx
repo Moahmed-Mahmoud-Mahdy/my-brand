@@ -76,7 +76,7 @@ export function NavBar() {
               <span className="absolute inset-[5px] rounded-full bg-bg-primary transition-transform duration-700 group-hover:scale-95" />
               <span className="absolute inset-[5px] translate-x-[3px] rounded-full bg-gold-primary/80" />
             </span>
-            <span className="font-cairo text-sm font-bold tracking-cinematic text-text-primary">
+            <span className="font-name text-sm tracking-cinematic text-text-primary">
               M.<span className="text-gold-primary">MAHDY</span>
             </span>
           </button>

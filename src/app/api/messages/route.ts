@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { isAuthenticated, authHeaders } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   try {
-    const auth = req.cookies.get("admin-session")?.value;
-    if (auth !== "authenticated") {
+    if (!isAuthenticated(req)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const messages = await db.message.findMany({
@@ -42,3 +42,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// re-export for convenience
+export { authHeaders };

@@ -8,6 +8,7 @@ import { useLanguage } from "@/components/language-provider";
 import { useCursor } from "@/components/cursor/cursor-provider";
 import { toast } from "sonner";
 import { AmbientBackground } from "@/components/effects/ambient-background";
+import { storeToken, getStoredToken } from "@/lib/auth";
 
 export default function LoginPage() {
   const { t, lang } = useLanguage();
@@ -19,11 +20,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("/api/auth/check")
+    // If we already have a token in localStorage (or cookie), skip login.
+    const token = getStoredToken();
+    fetch("/api/auth/check", {
+      headers: token ? { "x-admin-token": token } : {},
+    })
       .then((r) => r.json())
       .then((d) => {
         if (d.authenticated) router.push("/dashboard");
-      });
+      })
+      .catch(() => {});
   }, [router]);
 
   const onSubmit = async (e: FormEvent) => {
@@ -40,6 +46,9 @@ export default function LoginPage() {
         toast.error(t.admin.login.error);
         return;
       }
+      // Store token in localStorage as a fallback for iframe contexts
+      // where SameSite cookies may be blocked.
+      storeToken();
       toast.success(isAr ? "تم تسجيل الدخول" : "Signed in");
       router.push("/dashboard");
     } catch {

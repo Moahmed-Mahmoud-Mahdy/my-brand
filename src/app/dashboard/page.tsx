@@ -22,6 +22,13 @@ import { useCursor } from "@/components/cursor/cursor-provider";
 import { AmbientBackground } from "@/components/effects/ambient-background";
 import { toast } from "sonner";
 import type { Project, Message } from "@/lib/types";
+import {
+  getStoredToken,
+  storeToken,
+  clearToken,
+  authHeaders,
+  ADMIN_TOKEN,
+} from "@/lib/auth";
 
 export default function DashboardPage() {
   const { t, lang } = useLanguage();
@@ -36,37 +43,51 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false);
 
   const loadProjects = () =>
-    fetch("/api/projects")
+    fetch("/api/projects", { headers: authHeaders() })
       .then((r) => r.json())
       .then((d) => setProjects(Array.isArray(d) ? d : []));
 
   const loadMessages = () =>
-    fetch("/api/messages")
+    fetch("/api/messages", { headers: authHeaders() })
       .then((r) => r.json())
       .then((d) => setMessages(Array.isArray(d) ? d : []));
 
   useEffect(() => {
-    fetch("/api/auth/check")
+    const token = getStoredToken();
+    // Fast-path: if we have a local token, optimistically proceed and verify
+    // via the API (which accepts the token header as a cookie fallback).
+    fetch("/api/auth/check", {
+      headers: token ? { "x-admin-token": token } : {},
+    })
       .then((r) => r.json())
       .then((d) => {
         if (!d.authenticated) {
           router.push("/login");
           return;
         }
+        // Ensure token is stored (e.g. if auth came via cookie only)
+        storeToken();
         Promise.all([loadProjects(), loadMessages()]).finally(() =>
           setLoading(false)
         );
+      })
+      .catch(() => {
+        router.push("/login");
       });
   }, [router]);
 
   const logout = async () => {
+    clearToken();
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/login");
   };
 
   const deleteProject = async (id: string) => {
     if (!confirm(t.admin.dashboard.confirmDelete)) return;
-    await fetch(`/api/projects/${id}`, { method: "DELETE" });
+    await fetch(`/api/projects/${id}`, {
+      method: "DELETE",
+      headers: authHeaders(),
+    });
     toast.success(isAr ? "تم الحذف" : "Deleted");
     loadProjects();
   };
@@ -74,14 +95,17 @@ export default function DashboardPage() {
   const markRead = async (id: string, read: boolean) => {
     await fetch(`/api/messages/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ read }),
     });
     loadMessages();
   };
 
   const deleteMessage = async (id: string) => {
-    await fetch(`/api/messages/${id}`, { method: "DELETE" });
+    await fetch(`/api/messages/${id}`, {
+      method: "DELETE",
+      headers: authHeaders(),
+    });
     toast.success(isAr ? "تم الحذف" : "Deleted");
     loadMessages();
   };
@@ -485,7 +509,7 @@ function ProjectForm({
       const method = project ? "PUT" : "POST";
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error("failed");

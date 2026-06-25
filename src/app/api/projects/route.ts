@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { isAuthenticated } from "@/lib/auth";
 
 export async function GET() {
   try {
@@ -16,8 +17,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const auth = req.cookies.get("admin-session")?.value;
-    if (auth !== "authenticated") {
+    if (!isAuthenticated(req)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const body = await req.json();

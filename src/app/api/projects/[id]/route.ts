@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { isAuthenticated } from "@/lib/auth";
 
 export async function GET() {
   try {
@@ -17,8 +18,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const auth = req.cookies.get("admin-session")?.value;
-    if (auth !== "authenticated") {
+    if (!isAuthenticated(req)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const { id } = await params;
@@ -50,8 +50,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const auth = req.cookies.get("admin-session")?.value;
-    if (auth !== "authenticated") {
+    if (!isAuthenticated(req)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const { id } = await params;

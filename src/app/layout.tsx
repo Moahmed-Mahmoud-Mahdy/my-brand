@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Cairo, Tajawal } from "next/font/google";
+import { Inter, Cairo, Tajawal, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { LanguageProvider } from "@/components/language-provider";
@@ -22,6 +22,13 @@ const tajawal = Tajawal({
   variable: "--font-tajawal",
   subsets: ["arabic", "latin"],
   weight: ["200", "300", "400", "500", "700", "800", "900"],
+  display: "swap",
+});
+
+const plexArabic = IBM_Plex_Sans_Arabic({
+  variable: "--font-plex-arabic",
+  subsets: ["arabic", "latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -63,7 +70,7 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
     >
       <body
-        className={`${inter.variable} ${cairo.variable} ${tajawal.variable} antialiased bg-bg-primary text-text-primary font-cairo`}
+        className={`${inter.variable} ${cairo.variable} ${tajawal.variable} ${plexArabic.variable} antialiased bg-bg-primary text-text-primary font-cairo`}
       >
         <ThemeProvider
           attribute="class"

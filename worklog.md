@@ -95,3 +95,29 @@ Work Log:
 Stage Summary:
 - Loading screen now transitions to homepage automatically — no user interaction required
 - Lint clean
+
+---
+Task ID: 17
+Agent: Main (Z.ai Code)
+Task: Fix dashboard not opening in preview iframe + use IBM Plex Sans Arabic for the name
+
+Work Log:
+- Root cause of dashboard issue: SameSite=Lax cookies are blocked in cross-site preview iframes, causing a redirect loop between /login ↔ /dashboard
+- Created /lib/auth.ts with dual auth: httpOnly cookie + x-admin-token header (localStorage fallback)
+- Updated all protected API routes (projects, messages, auth/check) to accept EITHER cookie OR header token
+- Login page: stores token in localStorage after successful login
+- Dashboard: sends x-admin-token header on all fetches; works even when cookies are blocked
+- Added error handling (.catch) to auth check to prevent infinite loading spinner
+- Verified: cleared cookies → reloaded /dashboard → stays on dashboard (localStorage token authenticates via header)
+- Messages tab + project CRUD all work with token-only auth
+
+Font change:
+- Added IBM_Plex_Sans_Arabic (weights 100-700) via next/font/google
+- Created .font-name utility (font-weight 700, IBM Plex Sans Arabic) — moved OUT of @layer utilities to plain CSS so Tailwind 4 always emits the rule (critical: @layer utilities custom classes weren't being generated)
+- Applied .font-name to: hero name heading, nav brand "M.MAHDY", footer brand
+- VLM confirmed: name "محمد مهدي" now renders in clean modern premium sans-serif (IBM Plex Sans Arabic Bold)
+
+Stage Summary:
+- Dashboard now opens reliably in the preview iframe (localStorage token auth fallback)
+- Name uses IBM Plex Sans Arabic Bold/SemiBold as requested
+- Lint clean, all flows verified via agent-browser
