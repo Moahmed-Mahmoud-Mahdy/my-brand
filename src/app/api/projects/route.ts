@@ -21,16 +21,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const body = await req.json();
+    const stack = Array.isArray(body.stack)
+      ? body.stack.join(",")
+      : String(body.stack ?? "");
     const project = await db.project.create({
       data: {
         titleAr: body.titleAr,
         titleEn: body.titleEn,
         descAr: body.descAr,
         descEn: body.descEn,
-        techStack: body.techStack,
-        liveDemo: body.liveDemo || null,
-        github: body.github || null,
-        screenshot: body.screenshot,
+        stack,
+        githubUrl: body.githubUrl || null,
+        demoUrl: body.demoUrl || null,
+        desktopScreenshot:
+          body.desktopScreenshot || "/images/projects/desktop/p1.png",
+        mobileScreenshot: body.mobileScreenshot || null,
+        // legacy mirrors
+        techStack: stack,
+        liveDemo: body.demoUrl || null,
+        github: body.githubUrl || null,
+        screenshot: body.desktopScreenshot || null,
         order: body.order ?? 0,
         featured: body.featured ?? true,
       },

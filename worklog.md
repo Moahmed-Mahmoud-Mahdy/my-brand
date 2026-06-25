@@ -136,3 +136,54 @@ Work Log:
 
 Stage Summary:
 - Login button now shows "جارٍ تجربة الدخول" with a spinning loader while authenticating
+
+---
+Task ID: 19
+Agent: Main (Z.ai Code)
+Task: Redesign Projects section as premium cinematic case studies
+
+Work Log:
+- Updated Prisma schema: added `stack`, `githubUrl`, `demoUrl`, `desktopScreenshot`, `mobileScreenshot` fields (kept legacy fields as nullable for backward compat). Force-reset DB.
+- Updated types.ts: Project now has `stack: string[]`, `githubUrl`, `demoUrl`, `desktopScreenshot`, `mobileScreenshot`. Added `normalizeProject()` helper to map raw API records to canonical type (handles both new + legacy field names).
+- Created src/lib/mock-projects.ts: 5 placeholder projects with bilingual titles/descriptions, tech stacks, demo/github URLs, desktop+mobile screenshot paths. Strongest projects first. Kept separate from UI per architecture rules.
+- Generated 10 screenshots via Image Generation: 5 desktop (1344x768) + 5 mobile (768x1344) in public/images/projects/desktop|mobile/
+- Updated i18n: AR title "المشاريع" (was "شظايا الذاكرة"), EN title "Projects", EN subtitle "Premium case studies showcasing technical execution and product thinking.", AR subtitle "دراسات حالة مختارة تُبرز التنفيذ التقني والتفكير المنتجي.". Added desktopView/mobileView/caseStudy/project/fragment labels.
+- Created reusable components in src/components/projects/:
+  - ProjectCtaButton: reusable CTA (primary gold / secondary bordered), used for Live Demo + GitHub
+  - TechBadge: minimal premium pill with gold border + accent dot
+  - ProjectVisuals: desktop browser mockup + overlapping mobile phone mockup, premium presentation
+  - ProjectDetailsModal: fullscreen cinematic panel, 2-col desktop / 1-col mobile, ESC+outside-click close, body scroll lock, staggered content animation
+- Rebuilt ProjectsSection: asymmetric constellation layout (varying sizes + vertical offsets, no generic grid), idle state shows project number + glow, hover reveals title + stack preview + arrow, click opens modal. Ambient eclipse glow behind section.
+- Updated seed API + projects POST/PUT APIs to use new fields (writes both new + legacy mirror fields for safety).
+- Updated dashboard: normalizes projects via normalizeProject(), admin card uses desktopScreenshot + stack[], form uses new field names (stack, githubUrl, demoUrl, desktopScreenshot, mobileScreenshot).
+
+Verification (agent-browser):
+- Title "المشاريع" renders (AR), "Projects" (EN after toggle)
+- 5 circular eclipse fragments in asymmetric layout (VLM confirmed: "circular eclipse fragments, not rectangular cards", "asymmetric and premium")
+- Modal opens: 2-col layout, desktop browser mockup + mobile phone mockup both visible, Live Demo + GitHub buttons, case study eyebrow, 01/05 pagination
+- Conditional demo button: p1 (has demoUrl) shows BOTH Live Demo + GitHub; p5 (no demoUrl) shows ONLY GitHub (correctly hidden, never disabled)
+- Lint clean (0 errors, 0 warnings)
+
+Created Files:
+- src/lib/mock-projects.ts (placeholder data, separate from UI)
+- src/components/projects/project-cta-button.tsx (reusable CTA)
+- src/components/projects/tech-badge.tsx (reusable pill)
+- src/components/projects/project-visuals.tsx (desktop+mobile mockups)
+- src/components/projects/project-details-modal.tsx (fullscreen modal)
+- public/images/projects/desktop/p1-p5.png (5 desktop screenshots)
+- public/images/projects/mobile/p1-p5.png (5 mobile screenshots)
+
+Modified Files:
+- prisma/schema.prisma (new Project fields)
+- src/lib/types.ts (Project interface + normalizeProject helper)
+- src/lib/i18n.ts (new projects translations)
+- src/components/sections/projects-section.tsx (full rebuild)
+- src/app/api/seed/route.ts (uses MOCK_PROJECTS)
+- src/app/api/projects/route.ts + [id]/route.ts (new fields)
+- src/app/dashboard/page.tsx (normalize + new field names)
+
+Stage Summary:
+- Projects section completely rebuilt as premium cinematic case studies
+- Data model now supports desktop/mobile screenshots, stack array, github/demo URLs
+- Fullscreen modal with dual mockups, conditional buttons, accessible behavior
+- All architecture rules followed: reusable components, TypeScript strict, mock data separate, no hardcoded data in UI

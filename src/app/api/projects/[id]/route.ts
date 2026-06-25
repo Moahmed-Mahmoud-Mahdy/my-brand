@@ -23,6 +23,9 @@ export async function PUT(
     }
     const { id } = await params;
     const body = await req.json();
+    const stack = Array.isArray(body.stack)
+      ? body.stack.join(",")
+      : String(body.stack ?? "");
     const project = await db.project.update({
       where: { id },
       data: {
@@ -30,10 +33,15 @@ export async function PUT(
         titleEn: body.titleEn,
         descAr: body.descAr,
         descEn: body.descEn,
-        techStack: body.techStack,
-        liveDemo: body.liveDemo || null,
-        github: body.github || null,
-        screenshot: body.screenshot,
+        stack,
+        githubUrl: body.githubUrl || null,
+        demoUrl: body.demoUrl || null,
+        desktopScreenshot: body.desktopScreenshot,
+        mobileScreenshot: body.mobileScreenshot || null,
+        techStack: stack,
+        liveDemo: body.demoUrl || null,
+        github: body.githubUrl || null,
+        screenshot: body.desktopScreenshot,
         order: body.order,
         featured: body.featured,
       },

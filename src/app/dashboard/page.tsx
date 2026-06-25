@@ -22,6 +22,7 @@ import { useCursor } from "@/components/cursor/cursor-provider";
 import { AmbientBackground } from "@/components/effects/ambient-background";
 import { toast } from "sonner";
 import type { Project, Message } from "@/lib/types";
+import { normalizeProject } from "@/lib/types";
 import {
   getStoredToken,
   storeToken,
@@ -45,7 +46,11 @@ export default function DashboardPage() {
   const loadProjects = () =>
     fetch("/api/projects", { headers: authHeaders() })
       .then((r) => r.json())
-      .then((d) => setProjects(Array.isArray(d) ? d : []));
+      .then((d) =>
+        setProjects(
+          (Array.isArray(d) ? d : []).map(normalizeProject)
+        )
+      );
 
   const loadMessages = () =>
     fetch("/api/messages", { headers: authHeaders() })
@@ -340,7 +345,7 @@ function ProjectAdminCard({
     >
       <div className="relative aspect-video overflow-hidden">
         <img
-          src={project.screenshot}
+          src={project.desktopScreenshot}
           alt={title}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
@@ -370,17 +375,14 @@ function ProjectAdminCard({
           {isAr ? project.descAr : project.descEn}
         </p>
         <div className="mt-3 flex flex-wrap gap-1">
-          {project.techStack
-            .split(",")
-            .slice(0, 4)
-            .map((tech) => (
-              <span
-                key={tech}
-                className="rounded-full border border-eclipse-border px-2 py-0.5 font-mono text-[9px] text-text-secondary"
-              >
-                {tech.trim()}
-              </span>
-            ))}
+          {project.stack.slice(0, 4).map((tech) => (
+            <span
+              key={tech}
+              className="rounded-full border border-eclipse-border px-2 py-0.5 font-mono text-[9px] text-text-secondary"
+            >
+              {tech}
+            </span>
+          ))}
         </div>
       </div>
     </div>
@@ -491,10 +493,12 @@ function ProjectForm({
     titleEn: project?.titleEn ?? "",
     descAr: project?.descAr ?? "",
     descEn: project?.descEn ?? "",
-    techStack: project?.techStack ?? "",
-    liveDemo: project?.liveDemo ?? "",
-    github: project?.github ?? "",
-    screenshot: project?.screenshot ?? "/images/projects/project-1.png",
+    stack: project?.stack?.join(", ") ?? "",
+    githubUrl: project?.githubUrl ?? "",
+    demoUrl: project?.demoUrl ?? "",
+    desktopScreenshot:
+      project?.desktopScreenshot ?? "/images/projects/desktop/p1.png",
+    mobileScreenshot: project?.mobileScreenshot ?? "",
     order: project?.order ?? 0,
     featured: project?.featured ?? true,
   });
@@ -592,8 +596,8 @@ function ProjectForm({
           </Field>
           <Field label={isAr ? "التقنيات (مفصولة بفاصلة)" : "Tech Stack (comma separated)"}>
             <input
-              value={form.techStack}
-              onChange={(e) => setForm({ ...form, techStack: e.target.value })}
+              value={form.stack}
+              onChange={(e) => setForm({ ...form, stack: e.target.value })}
               required
               placeholder="Next.js,React,TypeScript"
               onMouseEnter={() => setVariant("text")}
@@ -601,11 +605,21 @@ function ProjectForm({
               className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"
             />
           </Field>
-          <Field label={isAr ? "مسار الصورة" : "Screenshot path"}>
+          <Field label={isAr ? "صورة سطح المكتب" : "Desktop Screenshot path"}>
             <input
-              value={form.screenshot}
-              onChange={(e) => setForm({ ...form, screenshot: e.target.value })}
+              value={form.desktopScreenshot}
+              onChange={(e) => setForm({ ...form, desktopScreenshot: e.target.value })}
               required
+              onMouseEnter={() => setVariant("text")}
+              onMouseLeave={() => setVariant("default")}
+              className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"
+            />
+          </Field>
+          <Field label={isAr ? "صورة الجوال" : "Mobile Screenshot path"}>
+            <input
+              value={form.mobileScreenshot}
+              onChange={(e) => setForm({ ...form, mobileScreenshot: e.target.value })}
+              placeholder="(optional)"
               onMouseEnter={() => setVariant("text")}
               onMouseLeave={() => setVariant("default")}
               className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"
@@ -613,8 +627,9 @@ function ProjectForm({
           </Field>
           <Field label="Live Demo URL">
             <input
-              value={form.liveDemo}
-              onChange={(e) => setForm({ ...form, liveDemo: e.target.value })}
+              value={form.demoUrl}
+              onChange={(e) => setForm({ ...form, demoUrl: e.target.value })}
+              placeholder="(optional)"
               onMouseEnter={() => setVariant("text")}
               onMouseLeave={() => setVariant("default")}
               className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"
@@ -622,8 +637,8 @@ function ProjectForm({
           </Field>
           <Field label="GitHub URL">
             <input
-              value={form.github}
-              onChange={(e) => setForm({ ...form, github: e.target.value })}
+              value={form.githubUrl}
+              onChange={(e) => setForm({ ...form, githubUrl: e.target.value })}
               onMouseEnter={() => setVariant("text")}
               onMouseLeave={() => setVariant("default")}
               className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"

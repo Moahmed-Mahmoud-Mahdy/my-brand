@@ -38,14 +38,19 @@ export const translations = {
     // Projects
     projects: {
       tag: "ذاكرة",
-      title: "شظايا الذاكرة",
-      subtitle: "أعمال مختارة — كل مشروع تجربة بحد ذاتها",
+      title: "المشاريع",
+      subtitle: "دراسات حالة مختارة تُبرز التنفيذ التقني والتفكير المنتجي.",
       liveDemo: "عرض مباشر",
-      github: "الكود",
+      github: "GitHub",
       techStack: "التقنيات",
       viewProject: "استكشف المشروع",
       closeProject: "إغلاق",
       empty: "لا توجد مشاريع بعد",
+      desktopView: "عرض سطح المكتب",
+      mobileView: "عرض الجوال",
+      caseStudy: "دراسة حالة",
+      project: "مشروع",
+      fragment: "شظية",
     },
     // Services
     services: {
@@ -178,14 +183,20 @@ export const translations = {
     },
     projects: {
       tag: "Memory",
-      title: "Memory Fragments",
-      subtitle: "Selected work — each project is an experience of its own",
+      title: "Projects",
+      subtitle:
+        "Premium case studies showcasing technical execution and product thinking.",
       liveDemo: "Live Demo",
-      github: "Code",
+      github: "GitHub",
       techStack: "Tech Stack",
       viewProject: "Explore Project",
       closeProject: "Close",
       empty: "No projects yet",
+      desktopView: "Desktop View",
+      mobileView: "Mobile View",
+      caseStudy: "Case Study",
+      project: "Project",
+      fragment: "Fragment",
     },
     services: {
       tag: "Services",
