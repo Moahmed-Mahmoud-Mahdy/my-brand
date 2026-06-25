@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, ArrowUp } from "lucide-react";
+import { Github, Linkedin, Instagram, ArrowUp } from "lucide-react";
 import { useLanguage } from "@/components/language-provider";
 import { useCursor } from "@/components/cursor/cursor-provider";
 
@@ -90,13 +90,13 @@ export function Footer() {
             className="flex items-center gap-3"
           >
             {[
-              { Icon: Github, href: "https://github.com", label: "GitHub" },
+              { Icon: Github, href: "https://github.com/Moahmed-Mahmoud-Mahdy", label: "GitHub" },
               {
                 Icon: Linkedin,
-                href: "https://linkedin.com",
+                href: "https://www.linkedin.com/in/mohamed-mahdy-898217305/",
                 label: "LinkedIn",
               },
-              { Icon: Twitter, href: "https://twitter.com", label: "Twitter" },
+              { Icon: Instagram, href: "https://www.instagram.com/mr_ultra_1/", label: "Instagram" },
             ].map(({ Icon, href, label }) => (
               <a
                 key={label}
