@@ -1,3 +1,4 @@
+import { ImageUpload } from "@/components/admin/image-upload";
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
@@ -605,26 +606,22 @@ function ProjectForm({
               className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"
             />
           </Field>
-          <Field label={isAr ? "صورة سطح المكتب" : "Desktop Screenshot path"}>
-            <input
+          <div className="col-span-1 sm:col-span-2">
+            <ImageUpload
+              label={isAr ? "صورة سطح المكتب (Cloudinary)" : "Desktop Screenshot (Cloudinary)"}
               value={form.desktopScreenshot}
-              onChange={(e) => setForm({ ...form, desktopScreenshot: e.target.value })}
-              required
-              onMouseEnter={() => setVariant("text")}
-              onMouseLeave={() => setVariant("default")}
-              className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"
+              onChange={(url) => setForm({ ...form, desktopScreenshot: url })}
+              isAr={isAr}
             />
-          </Field>
-          <Field label={isAr ? "صورة الجوال" : "Mobile Screenshot path"}>
-            <input
+          </div>
+          <div className="col-span-1 sm:col-span-2">
+            <ImageUpload
+              label={isAr ? "صورة الجوال (اختياري)" : "Mobile Screenshot (Optional)"}
               value={form.mobileScreenshot}
-              onChange={(e) => setForm({ ...form, mobileScreenshot: e.target.value })}
-              placeholder="(optional)"
-              onMouseEnter={() => setVariant("text")}
-              onMouseLeave={() => setVariant("default")}
-              className="w-full rounded-xl border border-eclipse-border bg-bg-primary/60 px-4 py-2.5 font-mono text-sm text-text-primary focus:border-gold-primary/60 focus:outline-none"
+              onChange={(url) => setForm({ ...form, mobileScreenshot: url })}
+              isAr={isAr}
             />
-          </Field>
+          </div>
           <Field label="Live Demo URL">
             <input
               value={form.demoUrl}
