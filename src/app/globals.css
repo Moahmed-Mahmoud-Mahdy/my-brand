@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -191,7 +192,7 @@
 /* Display font for the personal name — IBM Plex Sans Arabic (Bold/SemiBold).
    Defined outside @layer so the rule is always emitted. */
 .font-name {
-  font-family: var(--font-plex-arabic), var(--font-cairo), sans-serif !important;
+  font-family: 'IBM Plex Sans Arabic', var(--font-plex-arabic), var(--font-cairo), sans-serif !important;
   font-weight: 700;
   letter-spacing: -0.01em;
 }

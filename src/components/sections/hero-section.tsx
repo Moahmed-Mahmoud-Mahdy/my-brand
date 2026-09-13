@@ -259,7 +259,7 @@ function EclipsePhoto() {
       </div>
 
       {/* Inner gold border */}
-      <div className="absolute inset-[6%] rounded-full border border-gold-primary/40" />
+      <div className="absolute inset-[6%] rounded-full border-2 border-[#f5e5c0] shadow-[0_0_20px_rgba(245,229,192,0.7),_inset_0_0_12px_rgba(214,178,94,0.5)] pointer-events-none z-10" />
 
       {/* Floating accent sparkles */}
       <motion.div
