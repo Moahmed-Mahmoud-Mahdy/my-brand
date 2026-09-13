@@ -1,5 +1,5 @@
-import { ImageUpload } from "@/components/admin/image-upload";
 "use client";
+import { ImageUpload } from "@/components/admin/image-upload";
 
 import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
