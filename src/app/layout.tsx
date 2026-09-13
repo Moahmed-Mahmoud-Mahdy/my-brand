@@ -33,6 +33,11 @@ const plexArabic = IBM_Plex_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/apple-icon.png",
+  },
   title: "M. Mahdy — Full Stack Developer | Eclipse Identity Experience",
   description:
     "محمد مهدي — مطور Full Stack. أبني تجارب رقمية تجمع بين الأداء والتصميم القوي والإحساس السينمائي. A cinematic digital identity experience by M. Mahdy, Full Stack Developer.",
