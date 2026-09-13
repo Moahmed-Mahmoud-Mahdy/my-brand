@@ -60,7 +60,15 @@ export function HeroSection() {
             variants={fadeUp}
             className="font-name text-4xl leading-[1.05] tracking-cinematic text-text-primary sm:text-5xl md:text-6xl lg:text-7xl"
           >
-            {t.hero.name}
+            {isAr ? (
+              <>
+                محمد <span className="text-gold-primary glow-text-gold">مهدي</span>
+              </>
+            ) : (
+              <>
+                M. <span className="text-gold-primary glow-text-gold">Mahdy</span>
+              </>
+            )}
           </motion.h1>
 
           {/* Role */}

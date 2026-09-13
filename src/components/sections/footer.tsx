@@ -117,7 +117,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-eclipse-border/40 pt-6 sm:flex-row">
           <p className="font-mono text-[11px] text-text-secondary">
-            © {new Date().getFullYear()} M. Mahdy. {t.footer.rights}.
+            © {new Date().getFullYear()} M. <span className="text-gold-primary font-bold">Mahdy</span>. {t.footer.rights}.
           </p>
           <p className="font-mono text-[11px] text-text-secondary">
             {t.footer.madeWith}{" "}
